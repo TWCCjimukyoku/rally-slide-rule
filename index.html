@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ラリー計算尺</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #f2f0eb;
+    --surface:   #ffffff;
+    --border:    #d8d4cc;
+    --text:      #1e1c18;
+    --text-mid:  #6a6560;
+    --text-dim:  #a09c95;
+    --blue:      #0055bb;
+    --orange:    #cc4e00;
+    --red:       #c42020;
+    --footer-bg: #e8e5de;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  html, body {
+    height:100%; overflow:hidden;
+    background:var(--bg); color:var(--text);
+    font-family:'Noto Sans JP',sans-serif;
+    touch-action:none;
+  }
+  body { display:flex; flex-direction:column; align-items:center; }
+
+  body::before {
+    content:''; position:fixed; inset:0;
+    background-image:
+      radial-gradient(circle at 18% 18%, rgba(255,255,255,0.55) 0%, transparent 55%),
+      radial-gradient(circle at 82% 82%, rgba(200,188,165,0.18) 0%, transparent 55%);
+    pointer-events:none; z-index:0;
+  }
+
+  /* HEADER */
+  #header {
+    width:100%; padding:10px 18px 7px;
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    z-index:10; flex-shrink:0;
+    background:var(--surface);
+    border-bottom:1px solid var(--border);
+    box-shadow:0 1px 8px rgba(0,0,0,0.07);
+  }
+  #app-title {
+    font-family:'Rajdhani',sans-serif;
+    font-size:19px; font-weight:700;
+    letter-spacing:0.24em; text-transform:uppercase; color:var(--text);
+  }
+  #app-title span { color:var(--blue); }
+  #app-hint {
+    font-size:10px; color:var(--text-dim);
+    letter-spacing:0.05em; font-weight:300;
+    text-align:center; line-height:1.5;
+  }
+
+  /* MAIN */
+  #main {
+    flex:1; width:100%;
+    display:flex; align-items:center; justify-content:center;
+    z-index:10; min-height:0; padding:6px 8px;
+  }
+  #canvas-wrap {
+    display:flex; align-items:center; justify-content:center;
+    filter:drop-shadow(0 4px 18px rgba(0,0,0,0.12));
+    cursor:grab; user-select:none;
+  }
+  #canvas-wrap:active { cursor:grabbing; }
+  canvas { display:block; touch-action:none; }
+
+  /* FOOTER */
+  #footer {
+    width:100%; padding:8px 14px 12px;
+    z-index:10; flex-shrink:0;
+    background:var(--footer-bg);
+    border-top:1px solid var(--border);
+  }
+  #footer-inner {
+    display:flex; align-items:center; gap:10px; justify-content:center;
+  }
+  #speed-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:8px 16px;
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+    min-width:110px; box-shadow:0 2px 10px rgba(0,0,0,0.07);
+  }
+  #speed-label { font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-dim); }
+  #speed-value {
+    font-family:'Rajdhani',sans-serif;
+    font-size:32px; font-weight:700; color:var(--blue);
+    line-height:1; letter-spacing:0.02em;
+  }
+  #speed-unit { font-family:'Rajdhani',sans-serif; font-size:11px; color:var(--text-mid); letter-spacing:0.1em; }
+
+  #preset-wrap { display:flex; flex-direction:column; gap:4px; align-items:center; }
+  #preset-label { font-size:9px; color:var(--text-dim); letter-spacing:0.10em; text-transform:uppercase; text-align:center; }
+  #preset-select {
+    font-family:'Rajdhani',sans-serif; font-size:16px; font-weight:600; color:var(--blue);
+    background:var(--surface); border:1.5px solid var(--blue); border-radius:8px;
+    padding:5px 10px 5px 12px; appearance:none; -webkit-appearance:none;
+    cursor:pointer; outline:none; min-width:100px; text-align:center;
+    box-shadow:0 1px 6px rgba(0,85,187,0.10);
+  }
+  #preset-select:focus { box-shadow:0 0 0 3px rgba(0,85,187,0.15); }
+  #set-btn {
+    font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:600;
+    letter-spacing:0.10em; background:var(--blue); color:#fff;
+    border:none; border-radius:8px; padding:7px 14px; cursor:pointer;
+    box-shadow:0 2px 8px rgba(0,85,187,0.22);
+    transition:background 0.15s, transform 0.1s; white-space:nowrap;
+  }
+  #set-btn:active { background:#003d99; transform:scale(0.97); }
+  #footer-note {
+    text-align:center; font-size:9px; color:var(--text-dim);
+    margin-top:5px; letter-spacing:0.04em; line-height:1.5;
+  }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div id="app-title">RALLY <span>SLIDE RULE</span></div>
+  <div id="app-hint">
+    赤い「60」を外尺の指示速度に合わせてください<br>
+    内尺の時間と同じ角度の外尺数値＝移動距離(km)
+  </div>
+</div>
+
+<div id="main">
+  <div id="canvas-wrap">
+    <canvas id="c"></canvas>
+  </div>
+</div>
+
+<div id="footer">
+  <div id="footer-inner">
+    <div id="speed-card">
+      <div id="speed-label">指示速度</div>
+      <div id="speed-value">—</div>
+      <div id="speed-unit">km/h</div>
+    </div>
+    <div id="preset-wrap">
+      <div id="preset-label">速度をセット</div>
+      <select id="preset-select">
+        <option value="">選択...</option>
+        <option value="5">5 km/h</option>
+        <option value="10">10 km/h</option>
+        <option value="15">15 km/h</option>
+        <option value="20">20 km/h</option>
+        <option value="25">25 km/h</option>
+        <option value="30">30 km/h</option>
+        <option value="35">35 km/h</option>
+        <option value="40">40 km/h</option>
+        <option value="45">45 km/h</option>
+        <option value="50">50 km/h</option>
+        <option value="55">55 km/h</option>
+        <option value="60">60 km/h</option>
+        <option value="65">65 km/h</option>
+        <option value="70">70 km/h</option>
+        <option value="80">80 km/h</option>
+        <option value="90">90 km/h</option>
+        <option value="100">100 km/h</option>
+      </select>
+      <button id="set-btn">▶ セット</button>
+    </div>
+  </div>
+  <div id="footer-note">
+    外尺：速度(km/h)＝距離(km)　／　内尺：時間(min)　／　オレンジ▲：マイル換算
+  </div>
+</div>
+
+<script>
+(function(){
+  const canvas = document.getElementById('c');
+  const ctx    = canvas.getContext('2d');
+
+  // ── Layout ───────────────────────────────────────────
+  let CX, CY, R;
+
+  function resize() {
+    const wrap = document.getElementById('main');
+    const sz = Math.min(wrap.clientWidth - 16, wrap.clientHeight - 12);
+    canvas.width = canvas.height = sz;
+    CX = CY = sz / 2;
+    R  = sz / 2 * 0.96;
+    draw();
+  }
+
+  // ── Coordinate fix ───────────────────────────────────
+  function evtPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const sx = canvas.width  / rect.width;
+    const sy = canvas.height / rect.height;
+    const src = e.touches ? e.touches[0] : e;
+    return { x:(src.clientX - rect.left)*sx, y:(src.clientY - rect.top)*sy };
+  }
+
+  function ptAngle(x,y) { return Math.atan2(y-CY, x-CX); }
+  function norm(a) { return ((a%(2*Math.PI))+(2*Math.PI))%(2*Math.PI); }
+
+  // ── Scale definitions ────────────────────────────────
+  // Outer: Speed 5–100 km/h, log, full 360°
+  const V_MIN = 5, V_MAX = 100;
+  function speedToAngle(v) {
+    return -Math.PI/2 + (Math.log(v/V_MIN) / Math.log(V_MAX/V_MIN)) * 2*Math.PI;
+  }
+  function angleToSpeed(a) {
+    const frac = norm(a + Math.PI/2) / (2*Math.PI);
+    return V_MIN * Math.pow(V_MAX/V_MIN, frac);
+  }
+
+  // Inner: Time 3–60 min, log, same ratio as speed (×20)
+  const T_MIN = 3, T_MAX = 60;
+  let innerRot = 0;
+
+  function timeToAngle(t) {
+    return -Math.PI/2 + (Math.log(t/T_MIN) / Math.log(T_MAX/T_MIN)) * 2*Math.PI + innerRot;
+  }
+
+  function alignTo(v) {
+    // Place T_MAX(60 min) at speedToAngle(v)
+    innerRot = speedToAngle(v) - (-Math.PI/2 + 2*Math.PI);
+  }
+
+  function currentSpeed() {
+    return angleToSpeed(timeToAngle(T_MAX));
+  }
+
+  // ── Animation ────────────────────────────────────────
+  let animRAF = null;
+  function animateTo(v) {
+    const start = innerRot;
+    alignTo(v);
+    const end = innerRot;
+    innerRot  = start;
+    let diff  = end - start;
+    while (diff >  Math.PI) diff -= 2*Math.PI;
+    while (diff < -Math.PI) diff += 2*Math.PI;
+    const t0 = performance.now(), dur = 550;
+    function step(now) {
+      const p    = Math.min((now-t0)/dur, 1);
+      const ease = p<0.5 ? 2*p*p : -1+(4-2*p)*p;
+      innerRot   = start + diff*ease;
+      draw();
+      if (p < 1) animRAF = requestAnimationFrame(step);
+    }
+    if (animRAF) cancelAnimationFrame(animRAF);
+    animRAF = requestAnimationFrame(step);
+  }
+
+  // ── Colors ───────────────────────────────────────────
+  const C = {
+    outerPlate : '#ffffff',
+    innerPlate : '#edeae3',
+    outerTick  : '#1e1c18',
+    outerText  : '#1e1c18',
+    innerTick  : '#0055bb',
+    innerText  : '#0055bb',
+    mileMark   : '#cc4e00',
+    mileText   : '#cc4e00',
+    redMark    : '#c42020',
+    hub        : '#f2f0eb',
+    hubBorder  : '#d0ccc4',
+  };
+
+  // ── Master draw ──────────────────────────────────────
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const r      = R;
+    const innerR = r * 0.660;   // boundary outer↔inner ring
+    const hubR   = r * 0.330;
+
+    drawOuterPlate(r);
+    drawInnerPlate(innerR);
+    drawOuterDial(r, innerR);
+    drawInnerDial(innerR, hubR);
+    drawHub(hubR);
+    draw60Mark(innerR, hubR);
+    updateFooter();
+  }
+
+  // ── Plates ───────────────────────────────────────────
+  function drawOuterPlate(r) {
+    ctx.beginPath(); ctx.arc(CX,CY,r,0,2*Math.PI);
+    ctx.fillStyle='#ffffff'; ctx.fill();
+    ctx.strokeStyle='#b4b0a8'; ctx.lineWidth=1.5; ctx.stroke();
+  }
+  function drawInnerPlate(innerR) {
+    ctx.beginPath(); ctx.arc(CX,CY,innerR,0,2*Math.PI);
+    ctx.fillStyle=C.innerPlate; ctx.fill();
+    ctx.strokeStyle='#bebab2'; ctx.lineWidth=1.2; ctx.stroke();
+  }
+  function drawHub(hubR) {
+    ctx.beginPath(); ctx.arc(CX,CY,hubR+2,0,2*Math.PI);
+    ctx.fillStyle='rgba(0,0,0,0.05)'; ctx.fill();
+    ctx.beginPath(); ctx.arc(CX,CY,hubR,0,2*Math.PI);
+    ctx.fillStyle=C.hub; ctx.fill();
+    ctx.strokeStyle=C.hubBorder; ctx.lineWidth=1.5; ctx.stroke();
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.font=`700 ${hubR*0.22}px Rajdhani`;
+    ctx.fillStyle='#0055bb';
+    ctx.fillText('RALLY', CX, CY - hubR*0.13);
+    ctx.font=`300 ${hubR*0.15}px Rajdhani`;
+    ctx.fillStyle='#a09c95';
+    ctx.fillText('SLIDE RULE', CX, CY + hubR*0.15);
+    ctx.beginPath(); ctx.arc(CX,CY,3,0,2*Math.PI);
+    ctx.fillStyle='#c0bcb4'; ctx.fill();
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  OUTER DIAL — Speed 5–100 km/h
+  //
+  //  Tick direction: OUTWARD from inner edge of outer ring
+  //  i.e. base of tick = innerR (boundary circle),
+  //       tip of tick  = innerR + tick_length (toward outer rim)
+  //
+  //  This makes outer-dial ticks and inner-dial ticks face each
+  //  other at the boundary, just like a vernier caliper (nonius).
+  // ═══════════════════════════════════════════════════════
+  function drawOuterDial(r, innerR) {
+    // Ticks grow OUTWARD from innerR toward the outer rim
+    const base     = innerR;             // tick root = inner boundary
+    const len10    = (r - innerR)*0.50;  // major tick length (every 10)
+    const len5     = (r - innerR)*0.32;  // mid tick length   (every 5)
+    const len1     = (r - innerR)*0.18;  // minor tick length (every 1)
+
+    // Labels sit in the outer portion of the outer ring (above the ticks)
+    const labelR   = innerR + (r - innerR)*0.76;
+
+    // Mile markers sit in the inner portion of the outer ring
+    const mileTriR = innerR + (r - innerR)*0.15;  // triangle (close to boundary)
+    const mileLblR = innerR + (r - innerR)*0.56;  // mile number (mid-band)
+
+    for (let v = V_MIN; v <= V_MAX; v++) {
+      const a    = speedToAngle(v);
+      const is10 = (v % 10 === 0);
+      const is5  = (v % 5  === 0);
+      const len  = is10 ? len10 : (is5 ? len5 : len1);
+
+      ctx.beginPath();
+      ctx.moveTo(CX + base       *Math.cos(a), CY + base       *Math.sin(a));
+      ctx.lineTo(CX + (base+len) *Math.cos(a), CY + (base+len) *Math.sin(a));
+      ctx.strokeStyle = is10 ? '#1e1c18' : (is5 ? '#706c65' : '#c0bcb4');
+      ctx.lineWidth   = is10 ? 1.8 : (is5 ? 1.1 : 0.6);
+      ctx.stroke();
+
+      // ── Label rules ──
+      // • v 5–60:  every 5 km/h  (5,10,15,...,60)
+      // • v 61–100: every 10 km/h (70,80,90,100)
+      const showLabel = (v <= 60 && is5) || (v > 60 && is10);
+      if (showLabel) {
+        const lx = CX+labelR*Math.cos(a), ly = CY+labelR*Math.sin(a);
+        ctx.save(); ctx.translate(lx,ly); ctx.rotate(a+Math.PI/2);
+        // Slightly smaller font for 5-multiples that aren't 10-multiples
+        // to give visual hierarchy (10s are bolder/bigger)
+        const fs = is10 ? r*0.072 : r*0.056;
+        ctx.font      = `${is10?'700':'500'} ${fs}px Rajdhani`;
+        ctx.fillStyle = C.outerText;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(v.toString(), 0, 0);
+        ctx.restore();
+      }
+    }
+
+    // "km/h · km" unit hint
+    {
+      const a  = speedToAngle(V_MIN) - 0.36;
+      const lx = CX+labelR*Math.cos(a), ly=CY+labelR*Math.sin(a);
+      ctx.save(); ctx.translate(lx,ly); ctx.rotate(a+Math.PI/2);
+      ctx.font=`300 ${r*0.030}px Rajdhani`; ctx.fillStyle='#a09c95';
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('km/h · km',0,0);
+      ctx.restore();
+    }
+
+    // ── Mile markers ──────────────────────────────────
+    const miles=[
+      {kmh:16.1,mph:'10'},{kmh:32.2,mph:'20'},{kmh:48.3,mph:'30'},
+      {kmh:64.4,mph:'40'},{kmh:80.5,mph:'50'},{kmh:96.6,mph:'60'},
+    ];
+    miles.forEach(({kmh,mph})=>{
+      if(kmh<V_MIN||kmh>V_MAX) return;
+      const a=speedToAngle(kmh), ts=r*0.015;
+
+      // Triangle pointing outward (toward outer rim) at base of outer ring
+      const tx=CX+mileTriR*Math.cos(a), ty=CY+mileTriR*Math.sin(a);
+      ctx.save(); ctx.translate(tx,ty); ctx.rotate(a+Math.PI/2);
+      ctx.beginPath();
+      // Triangle points toward outer rim (upward in local coords = outward)
+      ctx.moveTo(0, ts*0.8);   // tip (outward)
+      ctx.lineTo(-ts, -ts*0.5);
+      ctx.lineTo( ts, -ts*0.5);
+      ctx.closePath();
+      ctx.fillStyle=C.mileMark; ctx.fill();
+      ctx.restore();
+
+      // Mile number in mid-band
+      const lx=CX+mileLblR*Math.cos(a), ly=CY+mileLblR*Math.sin(a);
+      ctx.save(); ctx.translate(lx,ly); ctx.rotate(a+Math.PI/2);
+      ctx.font=`500 ${r*0.046}px Rajdhani`; ctx.fillStyle=C.mileText;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(mph,0,0);
+      ctx.restore();
+    });
+
+    // "mi/h" tiny hint label
+    {
+      const a=speedToAngle(V_MIN)+0.36;
+      const lx=CX+mileLblR*Math.cos(a), ly=CY+mileLblR*Math.sin(a);
+      ctx.save(); ctx.translate(lx,ly); ctx.rotate(a+Math.PI/2);
+      ctx.font=`300 ${r*0.028}px Rajdhani`; ctx.fillStyle='rgba(204,78,0,0.60)';
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('mi/h',0,0);
+      ctx.restore();
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════
+  //  INNER DIAL — Time 3–60 min, LOG scale
+  //
+  //  Tick direction: INWARD from outer edge of inner ring
+  //  i.e. base = innerR (boundary), tip goes toward hub.
+  //  This makes inner ticks face outward ticks at the boundary.
+  // ═══════════════════════════════════════════════════════
+  function drawInnerDial(innerR, hubR) {
+    const base   = innerR;                    // tick root = outer edge of inner ring
+    const len10  = (innerR - hubR) * 0.38;   // major tick (every 10)
+    const len5   = (innerR - hubR) * 0.24;   // mid tick   (every 5)
+    const len1   = (innerR - hubR) * 0.14;   // minor tick (every 1)
+    const labelR = innerR - (innerR - hubR)*0.52;  // label radius (inside ticks)
+
+    for (let t = T_MIN; t <= T_MAX; t++) {
+      const a    = timeToAngle(t);
+      const is5  = (t % 5  === 0);
+      const is10 = (t % 10 === 0);
+      const len  = is10 ? len10 : (is5 ? len5 : len1);
+
+      ctx.beginPath();
+      // Inward: from base outward edge, going toward hub
+      ctx.moveTo(CX + base      *Math.cos(a), CY + base      *Math.sin(a));
+      ctx.lineTo(CX + (base-len)*Math.cos(a), CY + (base-len)*Math.sin(a));
+      ctx.strokeStyle = is5 ? C.innerTick : 'rgba(0,85,187,0.30)';
+      ctx.lineWidth   = is10 ? 1.6 : (is5 ? 1.0 : 0.6);
+      ctx.stroke();
+
+      // ── Label rules ──
+      // • t 3–10:  every integer  (3,4,5,6,7,8,9,10)
+      // • t 11–60: every 5 min    (15,20,25,...,55,60 — but 60 handled by red marker)
+      const showLabel = (t >= T_MIN && t <= 10) || (t > 10 && is5 && t < T_MAX);
+      if (showLabel) {
+        const lx = CX+labelR*Math.cos(a), ly=CY+labelR*Math.sin(a);
+        ctx.save(); ctx.translate(lx,ly); ctx.rotate(a+Math.PI/2);
+        const fs = is10 ? innerR*0.088 : (is5 ? innerR*0.076 : innerR*0.064);
+        ctx.font      = `${is10||is5?'600':'500'} ${fs}px Rajdhani`;
+        ctx.fillStyle = C.innerText;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(t.toString(), 0, 0);
+        ctx.restore();
+      }
+    }
+
+    // "min" tiny hint
+    {
+      const a  = timeToAngle(T_MIN) - 0.34;
+      const lx = CX+labelR*Math.cos(a), ly=CY+labelR*Math.sin(a);
+      ctx.save(); ctx.translate(lx,ly); ctx.rotate(a+Math.PI/2);
+      ctx.font=`300 ${innerR*0.038}px Rajdhani`;
+      ctx.fillStyle='rgba(0,85,187,0.45)';
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('min',0,0);
+      ctx.restore();
+    }
+  }
+
+  // ── Red "60" alignment marker ─────────────────────────
+  function draw60Mark(innerR, hubR) {
+    const a     = timeToAngle(T_MAX);
+    // Line from hub outward to the boundary
+    const lineO = innerR;          // outer end = at boundary
+    const lineI = hubR * 1.06;     // inner end = just outside hub
+    const ts    = innerR * 0.028;
+
+    // Bold red radial line
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(CX+lineI*Math.cos(a), CY+lineI*Math.sin(a));
+    ctx.lineTo(CX+lineO*Math.cos(a), CY+lineO*Math.sin(a));
+    ctx.strokeStyle=C.redMark; ctx.lineWidth=3.5; ctx.stroke();
+    ctx.restore();
+
+    // Arrowhead at boundary (pointing outward = toward outer ring)
+    const tx=CX+lineO*Math.cos(a), ty=CY+lineO*Math.sin(a);
+    ctx.save(); ctx.translate(tx,ty); ctx.rotate(a+Math.PI/2);
+    ctx.beginPath();
+    ctx.moveTo(0, ts*0.9);    // tip outward
+    ctx.lineTo(-ts, -ts*0.5);
+    ctx.lineTo( ts, -ts*0.5);
+    ctx.closePath();
+    ctx.fillStyle=C.redMark; ctx.fill();
+    ctx.restore();
+
+    // "60" label with white pill — large font
+    const lblR = innerR - (innerR-hubR)*0.52;
+    const lx=CX+lblR*Math.cos(a), ly=CY+lblR*Math.sin(a);
+    ctx.save(); ctx.translate(lx,ly); ctx.rotate(a+Math.PI/2);
+    const fs = innerR * 0.112;   // ~1.8× the normal inner label size
+    ctx.font = `700 ${fs}px Rajdhani`;
+    const tw = ctx.measureText('60').width;
+    ctx.fillStyle='rgba(255,255,255,0.92)';
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(-tw*0.72,-fs*0.68,tw*1.44,fs*1.36,fs*0.28);
+    else               ctx.rect(-tw*0.72,-fs*0.68,tw*1.44,fs*1.36);
+    ctx.fill();
+    ctx.fillStyle=C.redMark;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('60',0,0);
+    ctx.restore();
+  }
+
+  // ── Footer update ─────────────────────────────────────
+  function updateFooter() {
+    const spd = currentSpeed();
+    document.getElementById('speed-value').textContent =
+      (spd >= V_MIN*0.98 && spd <= V_MAX*1.02) ? spd.toFixed(1) : '—';
+  }
+
+  // ── Drag interaction ──────────────────────────────────
+  let dragging=false, dragTarget=null, lastAng=0;
+
+  function hitTest(x,y) {
+    const d      = Math.hypot(x-CX, y-CY);
+    const innerR = R*0.660;
+    const hubR   = R*0.330;
+    if (d > hubR && d <= innerR) return 'inner';
+    return null;
+  }
+
+  function onStart(e) {
+    e.preventDefault();
+    const p=evtPos(e); dragTarget=hitTest(p.x,p.y);
+    if (!dragTarget) return;
+    dragging=true; lastAng=ptAngle(p.x,p.y);
+  }
+  function onMove(e) {
+    if (!dragging) return; e.preventDefault();
+    const p=evtPos(e), a=ptAngle(p.x,p.y);
+    let d=a-lastAng;
+    if(d> Math.PI) d-=2*Math.PI;
+    if(d<-Math.PI) d+=2*Math.PI;
+    lastAng=a;
+    if(dragTarget==='inner'){ innerRot+=d; draw(); }
+  }
+  function onEnd(){ dragging=false; dragTarget=null; }
+
+  canvas.addEventListener('mousedown',  onStart);
+  canvas.addEventListener('mousemove',  onMove);
+  canvas.addEventListener('mouseup',    onEnd);
+  canvas.addEventListener('mouseleave', onEnd);
+  canvas.addEventListener('touchstart', onStart,{passive:false});
+  canvas.addEventListener('touchmove',  onMove, {passive:false});
+  canvas.addEventListener('touchend',   onEnd);
+  canvas.addEventListener('touchcancel',onEnd);
+
+  // ── Preset dropdown ───────────────────────────────────
+  document.getElementById('set-btn').addEventListener('click',()=>{
+    const sel=document.getElementById('preset-select');
+    const v=parseFloat(sel.value);
+    if(!isNaN(v)){ animateTo(v); sel.value=''; }
+  });
+  document.getElementById('preset-select').addEventListener('change',function(){
+    const v=parseFloat(this.value);
+    if(!isNaN(v)){ animateTo(v); this.value=''; }
+  });
+
+  window.addEventListener('resize', resize);
+  resize();
+})();
+</script>
+</body>
+</html>
