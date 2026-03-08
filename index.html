@@ -48,40 +48,24 @@
     border-bottom:1px solid var(--border);
     box-shadow:0 1px 8px rgba(0,0,0,0.07);
   }
-  #header-left {
-    display:flex; flex-direction:column; gap:2px; flex:1;
-  }
+  #header-left { display:flex; flex-direction:column; gap:2px; flex:1; }
   #app-title {
-    font-family:'Rajdhani',sans-serif;
-    font-size:18px; font-weight:700;
-    letter-spacing:0.22em; text-transform:uppercase; color:var(--text);
-    white-space:nowrap;
+    font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:700;
+    letter-spacing:0.22em; text-transform:uppercase; color:var(--text); white-space:nowrap;
   }
   #app-title span { color:var(--blue); }
-  #app-hint {
-    font-size:9.5px; color:var(--text-dim);
-    letter-spacing:0.04em; font-weight:300; line-height:1.45;
-  }
+  #app-hint { font-size:9.5px; color:var(--text-dim); letter-spacing:0.04em; font-weight:300; line-height:1.45; }
 
-  /* Mode toggle button */
   #mode-btn {
-    flex-shrink:0;
-    font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:600;
-    letter-spacing:0.08em;
-    border:1.5px solid var(--border); border-radius:20px;
-    padding:5px 10px; cursor:pointer;
-    background:var(--surface); color:var(--text-mid);
+    flex-shrink:0; font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:600;
+    letter-spacing:0.08em; border:1.5px solid var(--border); border-radius:20px;
+    padding:5px 10px; cursor:pointer; background:var(--surface); color:var(--text-mid);
     transition:all 0.2s; white-space:nowrap;
-    display:flex; flex-direction:column; align-items:center; gap:1px;
-    line-height:1.2;
+    display:flex; flex-direction:column; align-items:center; gap:1px; line-height:1.2;
   }
   #mode-btn .mode-icon { font-size:14px; }
-  #mode-btn.beginner {
-    background:#e8f0ff; border-color:var(--blue); color:var(--blue);
-  }
-  #mode-btn.advanced {
-    background:#f5f4f0; border-color:var(--border); color:var(--text-mid);
-  }
+  #mode-btn.beginner { background:#e8f0ff; border-color:var(--blue); color:var(--blue); }
+  #mode-btn.advanced { background:#f5f4f0; border-color:var(--border); color:var(--text-mid); }
 
   /* ── MAIN ── */
   #main {
@@ -99,98 +83,142 @@
 
   /* ── FOOTER ── */
   #footer {
-    width:100%; padding:8px 12px 11px;
-    z-index:10; flex-shrink:0;
+    width:100%; z-index:10; flex-shrink:0;
     background:var(--footer-bg);
     border-top:1px solid var(--border);
+    position:relative;
   }
 
-  /* Row 1: always visible — speed input */
+  /* ── NORMAL VIEW ── */
+  #view-normal {
+    padding:8px 12px 10px;
+    display:flex; flex-direction:column; gap:7px;
+  }
   #row-speed {
-    display:flex; align-items:center; justify-content:center; gap:10px;
-    margin-bottom:7px;
+    display:flex; align-items:center; justify-content:center;
   }
-
-  /* Speed input card — tappable */
   #speed-card {
     background:var(--surface); border:2px solid var(--blue);
-    border-radius:12px; padding:7px 14px;
+    border-radius:12px; padding:7px 18px;
     display:flex; flex-direction:column; align-items:center; gap:1px;
-    min-width:110px; box-shadow:0 2px 10px rgba(0,85,187,0.10);
-    cursor:pointer; position:relative;
-    transition:box-shadow 0.15s;
+    min-width:130px; box-shadow:0 2px 10px rgba(0,85,187,0.10);
+    cursor:pointer; transition:box-shadow 0.15s; position:relative;
   }
   #speed-card:active { box-shadow:0 0 0 4px rgba(0,85,187,0.18); }
+  #speed-card::after {
+    content:'タップして入力';
+    position:absolute; bottom:-16px; left:50%; transform:translateX(-50%);
+    font-size:8px; color:var(--blue); white-space:nowrap; opacity:0.7;
+  }
   #speed-label { font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-dim); }
   #speed-display {
-    font-family:'Rajdhani',sans-serif;
-    font-size:30px; font-weight:700; color:var(--blue);
+    font-family:'Rajdhani',sans-serif; font-size:30px; font-weight:700; color:var(--blue);
     line-height:1; letter-spacing:0.02em; min-width:80px; text-align:center;
   }
   #speed-unit { font-family:'Rajdhani',sans-serif; font-size:10px; color:var(--text-mid); letter-spacing:0.1em; }
-  /* Tap hint pulse */
-  #speed-card::after {
-    content:'タップして入力';
-    position:absolute; bottom:-18px; left:50%; transform:translateX(-50%);
-    font-size:8px; color:var(--blue); white-space:nowrap; letter-spacing:0.05em;
-    opacity:0.7;
-  }
 
-  /* Hidden real input (triggers native keyboard) */
-  #speed-input {
-    position:absolute; opacity:0; pointer-events:none;
-    width:1px; height:1px; top:0; left:0;
-  }
-
-  /* Row 2: beginner extras — stopwatch + distance + reset */
   #row-extras {
     display:flex; align-items:center; justify-content:center; gap:8px;
-    margin-top:14px;
-    transition:opacity 0.25s, max-height 0.25s;
+    margin-top:7px;
+    transition:opacity 0.25s, max-height 0.3s;
     overflow:hidden;
   }
-  #row-extras.hidden {
-    opacity:0; max-height:0; margin-top:0; pointer-events:none;
-  }
-  #row-extras.visible {
-    opacity:1; max-height:120px;
-  }
+  #row-extras.hidden  { opacity:0; max-height:0; margin-top:0; pointer-events:none; }
+  #row-extras.visible { opacity:1; max-height:100px; }
 
   .extra-card {
     background:var(--surface); border:1px solid var(--border);
-    border-radius:12px; padding:7px 12px;
+    border-radius:12px; padding:7px 10px;
     display:flex; flex-direction:column; align-items:center; gap:1px;
     flex:1; box-shadow:0 1px 6px rgba(0,0,0,0.06);
   }
   .extra-label { font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:var(--text-dim); }
-  .extra-value {
-    font-family:'Rajdhani',sans-serif;
-    font-size:26px; font-weight:700; line-height:1; letter-spacing:0.02em;
-  }
-  .extra-unit { font-family:'Rajdhani',sans-serif; font-size:10px; color:var(--text-mid); letter-spacing:0.08em; }
+  .extra-value { font-family:'Rajdhani',sans-serif; font-size:24px; font-weight:700; line-height:1; }
+  .extra-unit  { font-family:'Rajdhani',sans-serif; font-size:10px; color:var(--text-mid); letter-spacing:0.08em; }
   #elapsed-value { color:var(--orange); }
   #dist-value    { color:var(--green); }
 
-  /* Reset button */
   #reset-btn {
     font-family:'Rajdhani',sans-serif; font-size:12px; font-weight:600;
-    letter-spacing:0.08em;
-    background:var(--surface); color:var(--red);
-    border:1.5px solid var(--red); border-radius:10px;
-    padding:8px 12px; cursor:pointer;
-    box-shadow:0 1px 6px rgba(196,32,32,0.12);
-    transition:background 0.15s, transform 0.1s;
-    white-space:nowrap; flex-shrink:0;
-    display:flex; flex-direction:column; align-items:center; gap:1px;
-    line-height:1.2;
+    letter-spacing:0.08em; background:var(--surface); color:var(--red);
+    border:1.5px solid var(--red); border-radius:10px; padding:8px 11px;
+    cursor:pointer; box-shadow:0 1px 6px rgba(196,32,32,0.10);
+    transition:background 0.15s, transform 0.1s; white-space:nowrap; flex-shrink:0;
+    display:flex; flex-direction:column; align-items:center; gap:1px; line-height:1.2;
   }
   #reset-btn:active { background:#fff0f0; transform:scale(0.96); }
-  #reset-icon { font-size:16px; }
+  #reset-icon { font-size:15px; }
 
   #footer-note {
     text-align:center; font-size:8.5px; color:var(--text-dim);
-    margin-top:6px; letter-spacing:0.04em; line-height:1.5;
+    padding:4px 0 8px; letter-spacing:0.04em; line-height:1.5;
   }
+
+  /* ── NUMPAD VIEW ── */
+  #view-numpad {
+    display:none;
+    flex-direction:column;
+    padding:8px 10px 10px;
+    gap:6px;
+  }
+  #view-numpad.active { display:flex; }
+
+  /* Input preview bar */
+  #numpad-preview {
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--surface); border:2px solid var(--blue);
+    border-radius:10px; padding:6px 12px;
+    gap:8px;
+  }
+  #numpad-preview-inner {
+    display:flex; flex-direction:column; flex:1;
+  }
+  #numpad-preview-label {
+    font-size:8px; letter-spacing:0.14em; text-transform:uppercase; color:var(--text-dim);
+  }
+  #numpad-preview-value {
+    font-family:'Rajdhani',sans-serif; font-size:28px; font-weight:700;
+    color:var(--blue); line-height:1; letter-spacing:0.02em; min-height:32px;
+  }
+  #numpad-preview-unit {
+    font-family:'Rajdhani',sans-serif; font-size:10px; color:var(--text-mid);
+  }
+  /* Cancel button in preview bar */
+  #numpad-cancel {
+    font-family:'Rajdhani',sans-serif; font-size:20px; font-weight:300;
+    color:var(--text-dim); background:none; border:none;
+    cursor:pointer; padding:4px 6px; line-height:1; border-radius:6px;
+    transition:background 0.12s;
+  }
+  #numpad-cancel:active { background:rgba(0,0,0,0.07); }
+
+  /* Key grid */
+  #numpad-grid {
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:5px;
+  }
+  .nk {
+    font-family:'Rajdhani',sans-serif; font-size:22px; font-weight:600;
+    background:var(--surface); color:var(--text);
+    border:1px solid var(--border); border-radius:10px;
+    padding:10px 0; cursor:pointer;
+    text-align:center; line-height:1;
+    box-shadow:0 1px 4px rgba(0,0,0,0.07);
+    transition:background 0.1s, transform 0.08s;
+    user-select:none;
+  }
+  .nk:active { background:#e8edf5; transform:scale(0.94); }
+  .nk.nk-dot  { font-size:26px; color:var(--text-mid); }
+  .nk.nk-back { font-size:20px; color:var(--orange); border-color:rgba(204,78,0,0.3); }
+  .nk.nk-ok   {
+    background:var(--blue); color:#fff; border-color:var(--blue);
+    font-size:20px; grid-column:span 3;
+    padding:11px 0;
+    box-shadow:0 2px 8px rgba(0,85,187,0.25);
+  }
+  .nk.nk-ok:active { background:#003d99; transform:scale(0.97); }
+  .nk.nk-ok.disabled { background:#b0b8cc; border-color:#b0b8cc; cursor:default; }
 </style>
 </head>
 <body>
@@ -213,39 +241,72 @@
 </div>
 
 <div id="footer">
-  <!-- Row 1: Speed (always visible) -->
-  <div id="row-speed">
-    <div id="speed-card">
-      <div id="speed-label">指示速度</div>
-      <div id="speed-display">—</div>
-      <div id="speed-unit">km/h</div>
-      <input id="speed-input" type="number" inputmode="decimal"
-             min="1" max="200" step="0.1">
+
+  <!-- ── NORMAL VIEW ── -->
+  <div id="view-normal">
+    <div id="row-speed">
+      <div id="speed-card">
+        <div id="speed-label">指示速度</div>
+        <div id="speed-display">—</div>
+        <div id="speed-unit">km/h</div>
+      </div>
+    </div>
+
+    <div id="row-extras" class="visible">
+      <div class="extra-card">
+        <div class="extra-label">経過時間</div>
+        <div class="extra-value" id="elapsed-value">00:00</div>
+        <div class="extra-unit">mm:ss</div>
+      </div>
+      <div class="extra-card">
+        <div class="extra-label">走行距離</div>
+        <div class="extra-value" id="dist-value">0.00</div>
+        <div class="extra-unit">km</div>
+      </div>
+      <button id="reset-btn">
+        <span id="reset-icon">↺</span>
+        <span>リセット</span>
+      </button>
+    </div>
+
+    <div id="footer-note">
+      外尺：速度(km/h)＝距離(km)　／　内尺：時間(min)　／　▲：マイル換算
     </div>
   </div>
 
-  <!-- Row 2: Stopwatch + Distance + Reset (beginner only) -->
-  <div id="row-extras" class="visible">
-    <div class="extra-card">
-      <div class="extra-label">経過時間</div>
-      <div class="extra-value" id="elapsed-value">00:00</div>
-      <div class="extra-unit">mm:ss</div>
+  <!-- ── NUMPAD VIEW ── -->
+  <div id="view-numpad">
+
+    <!-- Preview: shows typed value + cancel -->
+    <div id="numpad-preview">
+      <div id="numpad-preview-inner">
+        <div id="numpad-preview-label">指示速度を入力</div>
+        <div id="numpad-preview-value">—</div>
+        <div id="numpad-preview-unit">km/h</div>
+      </div>
+      <button id="numpad-cancel">✕</button>
     </div>
-    <div class="extra-card">
-      <div class="extra-label">走行距離</div>
-      <div class="extra-value" id="dist-value">0.00</div>
-      <div class="extra-unit">km</div>
+
+    <!-- Key grid: 7 8 9 / 4 5 6 / 1 2 3 / . 0 ⌫ / [確定] -->
+    <div id="numpad-grid">
+      <button class="nk" data-v="7">7</button>
+      <button class="nk" data-v="8">8</button>
+      <button class="nk" data-v="9">9</button>
+      <button class="nk" data-v="4">4</button>
+      <button class="nk" data-v="5">5</button>
+      <button class="nk" data-v="6">6</button>
+      <button class="nk" data-v="1">1</button>
+      <button class="nk" data-v="2">2</button>
+      <button class="nk" data-v="3">3</button>
+      <button class="nk nk-dot"  data-v=".">·</button>
+      <button class="nk" data-v="0">0</button>
+      <button class="nk nk-back" data-v="back">⌫</button>
+      <button class="nk nk-ok disabled" id="numpad-ok">確　定</button>
     </div>
-    <button id="reset-btn">
-      <span id="reset-icon">↺</span>
-      <span>リセット</span>
-    </button>
+
   </div>
 
-  <div id="footer-note">
-    外尺：速度(km/h)＝距離(km)　／　内尺：時間(min)　／　▲：マイル換算
-  </div>
-</div>
+</div><!-- /footer -->
 
 <script>
 (function(){
@@ -254,58 +315,45 @@
 
   // ── Layout ───────────────────────────────────────────
   let CX, CY, R;
-  function resize() {
+  function resize(){
     const wrap = document.getElementById('main');
-    const sz = Math.min(wrap.clientWidth - 16, wrap.clientHeight - 12);
+    const sz = Math.min(wrap.clientWidth-16, wrap.clientHeight-12);
     canvas.width = canvas.height = sz;
-    CX = CY = sz / 2;
-    R  = sz / 2 * 0.96;
+    CX = CY = sz/2; R = sz/2*0.96;
     draw();
   }
 
   // ── Coordinate fix ───────────────────────────────────
-  function evtPos(e) {
-    const rect = canvas.getBoundingClientRect();
-    const sx = canvas.width  / rect.width;
-    const sy = canvas.height / rect.height;
-    const src = e.touches ? e.touches[0] : e;
-    return { x:(src.clientX-rect.left)*sx, y:(src.clientY-rect.top)*sy };
+  function evtPos(e){
+    const rect=canvas.getBoundingClientRect();
+    const sx=canvas.width/rect.width, sy=canvas.height/rect.height;
+    const src=e.touches?e.touches[0]:e;
+    return {x:(src.clientX-rect.left)*sx, y:(src.clientY-rect.top)*sy};
   }
-  function ptAngle(x,y) { return Math.atan2(y-CY, x-CX); }
-  function norm(a) { return ((a%(2*Math.PI))+(2*Math.PI))%(2*Math.PI); }
+  function ptAngle(x,y){ return Math.atan2(y-CY,x-CX); }
+  function norm(a){ return ((a%(2*Math.PI))+(2*Math.PI))%(2*Math.PI); }
 
   // ── Scales ───────────────────────────────────────────
   const V_MIN=5, V_MAX=100;
-  function speedToAngle(v) {
-    return -Math.PI/2 + (Math.log(v/V_MIN)/Math.log(V_MAX/V_MIN))*2*Math.PI;
-  }
-  function angleToSpeed(a) {
-    const frac = norm(a+Math.PI/2)/(2*Math.PI);
-    return V_MIN * Math.pow(V_MAX/V_MIN, frac);
-  }
+  function speedToAngle(v){ return -Math.PI/2+(Math.log(v/V_MIN)/Math.log(V_MAX/V_MIN))*2*Math.PI; }
+  function angleToSpeed(a){ return V_MIN*Math.pow(V_MAX/V_MIN, norm(a+Math.PI/2)/(2*Math.PI)); }
 
   const T_MIN=3, T_MAX=60;
-  let innerRot = 0;
-  function timeToAngle(t) {
-    return -Math.PI/2 + (Math.log(t/T_MIN)/Math.log(T_MAX/T_MIN))*2*Math.PI + innerRot;
-  }
-  function alignTo(v) {
-    innerRot = speedToAngle(v) - (-Math.PI/2 + 2*Math.PI);
-  }
-  function currentSpeed() { return angleToSpeed(timeToAngle(T_MAX)); }
+  let innerRot=0;
+  function timeToAngle(t){ return -Math.PI/2+(Math.log(t/T_MIN)/Math.log(T_MAX/T_MIN))*2*Math.PI+innerRot; }
+  function alignTo(v){ innerRot=speedToAngle(v)-(-Math.PI/2+2*Math.PI); }
+  function currentSpeed(){ return angleToSpeed(timeToAngle(T_MAX)); }
 
   // ── Animation ────────────────────────────────────────
   let animRAF=null;
-  function animateTo(v) {
-    const start=innerRot;
-    alignTo(v); const end=innerRot; innerRot=start;
+  function animateTo(v){
+    const start=innerRot; alignTo(v); const end=innerRot; innerRot=start;
     let diff=end-start;
-    while(diff> Math.PI) diff-=2*Math.PI;
+    while(diff>Math.PI)  diff-=2*Math.PI;
     while(diff<-Math.PI) diff+=2*Math.PI;
     const t0=performance.now(), dur=500;
     function step(now){
-      const p=Math.min((now-t0)/dur,1);
-      const ease=p<0.5?2*p*p:-1+(4-2*p)*p;
+      const p=Math.min((now-t0)/dur,1), ease=p<0.5?2*p*p:-1+(4-2*p)*p;
       innerRot=start+diff*ease; draw();
       if(p<1) animRAF=requestAnimationFrame(step);
     }
@@ -315,22 +363,19 @@
 
   // ── Colors ───────────────────────────────────────────
   const C={
-    outerPlate:'#ffffff', innerPlate:'#edeae3',
-    outerText:'#1e1c18', innerText:'#0055bb',
-    innerTick:'#0055bb', mileMark:'#cc4e00', mileText:'#cc4e00',
-    redMark:'#c42020', hub:'#f2f0eb', hubBorder:'#d0ccc4',
+    outerPlate:'#ffffff',innerPlate:'#edeae3',
+    outerText:'#1e1c18',innerText:'#0055bb',innerTick:'#0055bb',
+    mileMark:'#cc4e00',mileText:'#cc4e00',redMark:'#c42020',
+    hub:'#f2f0eb',hubBorder:'#d0ccc4',
   };
 
   // ── Draw ─────────────────────────────────────────────
-  function draw() {
+  function draw(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     const r=R, innerR=r*0.660, hubR=r*0.330;
-    drawOuterPlate(r);
-    drawInnerPlate(innerR);
-    drawOuterDial(r,innerR);
-    drawInnerDial(innerR,hubR);
-    drawHub(hubR);
-    draw60Mark(innerR,hubR);
+    drawOuterPlate(r); drawInnerPlate(innerR);
+    drawOuterDial(r,innerR); drawInnerDial(innerR,hubR);
+    drawHub(hubR); draw60Mark(innerR,hubR);
     updateSpeedDisplay();
   }
 
@@ -359,87 +404,72 @@
     ctx.fillStyle='#c0bcb4'; ctx.fill();
   }
 
-  // Outer dial — ticks OUTWARD from inner boundary
-  function drawOuterDial(r, innerR){
+  function drawOuterDial(r,innerR){
     const base=innerR;
     const len10=(r-innerR)*0.50, len5=(r-innerR)*0.32, len1=(r-innerR)*0.18;
     const labelR=innerR+(r-innerR)*0.76;
-    const mileTriR=innerR+(r-innerR)*0.15;
-    const mileLblR=innerR+(r-innerR)*0.56;
+    const mileTriR=innerR+(r-innerR)*0.15, mileLblR=innerR+(r-innerR)*0.56;
 
     for(let v=V_MIN;v<=V_MAX;v++){
-      const a=speedToAngle(v);
-      const is10=(v%10===0), is5=(v%5===0);
+      const a=speedToAngle(v), is10=(v%10===0), is5=(v%5===0);
       const len=is10?len10:(is5?len5:len1);
       ctx.beginPath();
-      ctx.moveTo(CX+base*Math.cos(a),      CY+base*Math.sin(a));
-      ctx.lineTo(CX+(base+len)*Math.cos(a),CY+(base+len)*Math.sin(a));
+      ctx.moveTo(CX+base*Math.cos(a),       CY+base*Math.sin(a));
+      ctx.lineTo(CX+(base+len)*Math.cos(a), CY+(base+len)*Math.sin(a));
       ctx.strokeStyle=is10?'#1e1c18':(is5?'#706c65':'#c0bcb4');
       ctx.lineWidth=is10?1.8:(is5?1.1:0.6); ctx.stroke();
-
-      const showLabel=(v<=60&&is5)||(v>60&&is10);
-      if(showLabel){
+      const show=(v<=60&&is5)||(v>60&&is10);
+      if(show){
         const lx=CX+labelR*Math.cos(a), ly=CY+labelR*Math.sin(a);
         ctx.save(); ctx.translate(lx,ly); ctx.rotate(a+Math.PI/2);
-        const fs=is10?r*0.072:r*0.056;
-        ctx.font=`${is10?'700':'500'} ${fs}px Rajdhani`;
+        ctx.font=`${is10?'700':'500'} ${is10?r*0.072:r*0.056}px Rajdhani`;
         ctx.fillStyle=C.outerText; ctx.textAlign='center'; ctx.textBaseline='middle';
         ctx.fillText(v.toString(),0,0); ctx.restore();
       }
     }
-    { // unit label
-      const a=speedToAngle(V_MIN)-0.36;
-      const lx=CX+labelR*Math.cos(a),ly=CY+labelR*Math.sin(a);
+    {
+      const a=speedToAngle(V_MIN)-0.36, lx=CX+labelR*Math.cos(a), ly=CY+labelR*Math.sin(a);
       ctx.save(); ctx.translate(lx,ly); ctx.rotate(a+Math.PI/2);
       ctx.font=`300 ${r*0.030}px Rajdhani`; ctx.fillStyle='#a09c95';
-      ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText('km/h · km',0,0); ctx.restore();
+      ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('km/h · km',0,0); ctx.restore();
     }
-    // Mile markers
     [{kmh:16.1,mph:'10'},{kmh:32.2,mph:'20'},{kmh:48.3,mph:'30'},
      {kmh:64.4,mph:'40'},{kmh:80.5,mph:'50'},{kmh:96.6,mph:'60'}]
     .forEach(({kmh,mph})=>{
       if(kmh<V_MIN||kmh>V_MAX) return;
-      const a=speedToAngle(kmh),ts=r*0.015;
-      const tx=CX+mileTriR*Math.cos(a),ty=CY+mileTriR*Math.sin(a);
+      const a=speedToAngle(kmh), ts=r*0.015;
+      const tx=CX+mileTriR*Math.cos(a), ty=CY+mileTriR*Math.sin(a);
       ctx.save(); ctx.translate(tx,ty); ctx.rotate(a+Math.PI/2);
       ctx.beginPath(); ctx.moveTo(0,ts*0.8); ctx.lineTo(-ts,-ts*0.5); ctx.lineTo(ts,-ts*0.5);
       ctx.closePath(); ctx.fillStyle=C.mileMark; ctx.fill(); ctx.restore();
-      const lx=CX+mileLblR*Math.cos(a),ly=CY+mileLblR*Math.sin(a);
+      const lx=CX+mileLblR*Math.cos(a), ly=CY+mileLblR*Math.sin(a);
       ctx.save(); ctx.translate(lx,ly); ctx.rotate(a+Math.PI/2);
       ctx.font=`500 ${r*0.046}px Rajdhani`; ctx.fillStyle=C.mileText;
-      ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText(mph,0,0); ctx.restore();
+      ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(mph,0,0); ctx.restore();
     });
-    { // mi/h hint
-      const a=speedToAngle(V_MIN)+0.36;
-      const lx=CX+mileLblR*Math.cos(a),ly=CY+mileLblR*Math.sin(a);
+    {
+      const a=speedToAngle(V_MIN)+0.36, lx=CX+mileLblR*Math.cos(a), ly=CY+mileLblR*Math.sin(a);
       ctx.save(); ctx.translate(lx,ly); ctx.rotate(a+Math.PI/2);
       ctx.font=`300 ${r*0.028}px Rajdhani`; ctx.fillStyle='rgba(204,78,0,0.60)';
-      ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText('mi/h',0,0); ctx.restore();
+      ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('mi/h',0,0); ctx.restore();
     }
   }
 
-  // Inner dial — ticks INWARD from outer boundary, LOG scale
-  function drawInnerDial(innerR, hubR){
+  function drawInnerDial(innerR,hubR){
     const base=innerR;
     const len10=(innerR-hubR)*0.38, len5=(innerR-hubR)*0.24, len1=(innerR-hubR)*0.14;
     const labelR=innerR-(innerR-hubR)*0.52;
-
     for(let t=T_MIN;t<=T_MAX;t++){
-      const a=timeToAngle(t);
-      const is5=(t%5===0), is10=(t%10===0);
+      const a=timeToAngle(t), is5=(t%5===0), is10=(t%10===0);
       const len=is10?len10:(is5?len5:len1);
       ctx.beginPath();
-      ctx.moveTo(CX+base*Math.cos(a),      CY+base*Math.sin(a));
-      ctx.lineTo(CX+(base-len)*Math.cos(a),CY+(base-len)*Math.sin(a));
+      ctx.moveTo(CX+base*Math.cos(a),       CY+base*Math.sin(a));
+      ctx.lineTo(CX+(base-len)*Math.cos(a), CY+(base-len)*Math.sin(a));
       ctx.strokeStyle=is5?C.innerTick:'rgba(0,85,187,0.30)';
       ctx.lineWidth=is10?1.6:(is5?1.0:0.6); ctx.stroke();
-
-      const showLabel=(t>=T_MIN&&t<=10)||(t>10&&is5&&t<T_MAX);
-      if(showLabel){
-        const lx=CX+labelR*Math.cos(a),ly=CY+labelR*Math.sin(a);
+      const show=(t>=T_MIN&&t<=10)||(t>10&&is5&&t<T_MAX);
+      if(show){
+        const lx=CX+labelR*Math.cos(a), ly=CY+labelR*Math.sin(a);
         ctx.save(); ctx.translate(lx,ly); ctx.rotate(a+Math.PI/2);
         const fs=is10?innerR*0.088:(is5?innerR*0.076:innerR*0.064);
         ctx.font=`${is10||is5?'600':'500'} ${fs}px Rajdhani`;
@@ -447,152 +477,166 @@
         ctx.fillText(t.toString(),0,0); ctx.restore();
       }
     }
-    { // min hint
-      const a=timeToAngle(T_MIN)-0.34;
-      const lx=CX+labelR*Math.cos(a),ly=CY+labelR*Math.sin(a);
+    {
+      const a=timeToAngle(T_MIN)-0.34, lx=CX+labelR*Math.cos(a), ly=CY+labelR*Math.sin(a);
       ctx.save(); ctx.translate(lx,ly); ctx.rotate(a+Math.PI/2);
       ctx.font=`300 ${innerR*0.038}px Rajdhani`; ctx.fillStyle='rgba(0,85,187,0.45)';
-      ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText('min',0,0); ctx.restore();
+      ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('min',0,0); ctx.restore();
     }
   }
 
   function draw60Mark(innerR,hubR){
-    const a=timeToAngle(T_MAX);
-    const lineO=innerR, lineI=hubR*1.06, ts=innerR*0.028;
-    ctx.save();
-    ctx.beginPath();
+    const a=timeToAngle(T_MAX), lineO=innerR, lineI=hubR*1.06, ts=innerR*0.028;
+    ctx.save(); ctx.beginPath();
     ctx.moveTo(CX+lineI*Math.cos(a),CY+lineI*Math.sin(a));
     ctx.lineTo(CX+lineO*Math.cos(a),CY+lineO*Math.sin(a));
-    ctx.strokeStyle=C.redMark; ctx.lineWidth=3.5; ctx.stroke();
-    ctx.restore();
-    const tx=CX+lineO*Math.cos(a),ty=CY+lineO*Math.sin(a);
+    ctx.strokeStyle=C.redMark; ctx.lineWidth=3.5; ctx.stroke(); ctx.restore();
+    const tx=CX+lineO*Math.cos(a), ty=CY+lineO*Math.sin(a);
     ctx.save(); ctx.translate(tx,ty); ctx.rotate(a+Math.PI/2);
     ctx.beginPath(); ctx.moveTo(0,ts*0.9); ctx.lineTo(-ts,-ts*0.5); ctx.lineTo(ts,-ts*0.5);
     ctx.closePath(); ctx.fillStyle=C.redMark; ctx.fill(); ctx.restore();
-
-    const lblR=innerR-(innerR-hubR)*0.52;
-    const lx=CX+lblR*Math.cos(a),ly=CY+lblR*Math.sin(a);
+    const lblR=innerR-(innerR-hubR)*0.52, lx=CX+lblR*Math.cos(a), ly=CY+lblR*Math.sin(a);
     ctx.save(); ctx.translate(lx,ly); ctx.rotate(a+Math.PI/2);
-    const fs=innerR*0.112;
-    ctx.font=`700 ${fs}px Rajdhani`;
+    const fs=innerR*0.112; ctx.font=`700 ${fs}px Rajdhani`;
     const tw=ctx.measureText('60').width;
-    ctx.fillStyle='rgba(255,255,255,0.92)';
-    ctx.beginPath();
+    ctx.fillStyle='rgba(255,255,255,0.92)'; ctx.beginPath();
     if(ctx.roundRect) ctx.roundRect(-tw*0.72,-fs*0.68,tw*1.44,fs*1.36,fs*0.28);
     else ctx.rect(-tw*0.72,-fs*0.68,tw*1.44,fs*1.36);
-    ctx.fill();
-    ctx.fillStyle=C.redMark; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fill(); ctx.fillStyle=C.redMark; ctx.textAlign='center'; ctx.textBaseline='middle';
     ctx.fillText('60',0,0); ctx.restore();
   }
 
   // ── Speed display ─────────────────────────────────────
-  let currentSpeedKmh = null;
-
+  let currentSpeedKmh=null;
   function updateSpeedDisplay(){
-    const spd=currentSpeed();
-    const ok=(spd>=V_MIN*0.98&&spd<=V_MAX*1.02);
-    currentSpeedKmh = ok ? spd : null;
-    document.getElementById('speed-display').textContent = ok ? spd.toFixed(1) : '—';
+    const spd=currentSpeed(), ok=(spd>=V_MIN*0.98&&spd<=V_MAX*1.02);
+    currentSpeedKmh=ok?spd:null;
+    document.getElementById('speed-display').textContent=ok?spd.toFixed(1):'—';
   }
 
   // ── Stopwatch ─────────────────────────────────────────
-  let timerStart   = null;   // Date.now() when started
-  let timerOffset  = 0;      // accumulated ms before last reset
-  let timerRAF     = null;
-  let timerRunning = false;
+  let timerStart=null, timerOffset=0, timerRAF=null, timerRunning=false;
 
   function startTimer(){
     if(timerRunning) return;
-    timerRunning = true;
-    timerStart   = performance.now();
-    tickTimer();
+    timerRunning=true; timerStart=performance.now(); tickTimer();
   }
   function tickTimer(){
     if(!timerRunning) return;
-    const elapsed = timerOffset + (performance.now() - timerStart); // ms
-    renderTimer(elapsed);
-    timerRAF = requestAnimationFrame(tickTimer);
+    renderTimer(timerOffset+(performance.now()-timerStart));
+    timerRAF=requestAnimationFrame(tickTimer);
   }
   function resetTimer(){
-    timerRunning = false;
-    timerOffset  = 0;
-    timerStart   = null;
+    timerRunning=false; timerOffset=0; timerStart=null;
     if(timerRAF) cancelAnimationFrame(timerRAF);
     renderTimer(0);
-    // Restart immediately if speed is set
-    if(currentSpeedKmh !== null) startTimer();
+    if(currentSpeedKmh!==null) startTimer();
   }
   function renderTimer(ms){
-    const totalSec = Math.floor(ms/1000);
-    const mm = String(Math.floor(totalSec/60)).padStart(2,'0');
-    const ss = String(totalSec%60).padStart(2,'0');
-    document.getElementById('elapsed-value').textContent = `${mm}:${ss}`;
-    // Distance
-    const minutes = ms / 60000;
-    const dist = currentSpeedKmh !== null ? currentSpeedKmh * (minutes/60) : 0;
-    document.getElementById('dist-value').textContent = dist.toFixed(2);
+    const s=Math.floor(ms/1000);
+    document.getElementById('elapsed-value').textContent=
+      String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+    const dist=currentSpeedKmh!==null?currentSpeedKmh*(ms/3600000):0;
+    document.getElementById('dist-value').textContent=dist.toFixed(2);
   }
 
   function onSpeedSet(v){
     if(isNaN(v)||v<=0) return;
-    animateTo(v);
-    currentSpeedKmh = v;
-    document.getElementById('speed-display').textContent = v.toFixed(1);
-    // Restart timer
-    timerRunning = false;
-    timerOffset  = 0;
+    animateTo(v); currentSpeedKmh=v;
+    document.getElementById('speed-display').textContent=v.toFixed(1);
+    timerRunning=false; timerOffset=0;
     if(timerRAF) cancelAnimationFrame(timerRAF);
-    timerStart = performance.now();
-    timerRunning = true;
-    tickTimer();
+    timerStart=performance.now(); timerRunning=true; tickTimer();
   }
 
-  // ── Speed input (native keyboard) ────────────────────
-  const speedInput = document.getElementById('speed-input');
-  const speedCard  = document.getElementById('speed-card');
+  // ── Custom Numpad ─────────────────────────────────────
+  const viewNormal  = document.getElementById('view-normal');
+  const viewNumpad  = document.getElementById('view-numpad');
+  const previewVal  = document.getElementById('numpad-preview-value');
+  const okBtn       = document.getElementById('numpad-ok');
+  let   numStr      = '';   // current typed string
 
-  speedCard.addEventListener('click', ()=>{
-    speedInput.value = '';
-    speedInput.focus();
-  });
-  speedCard.addEventListener('touchend', (e)=>{
-    e.preventDefault();
-    speedInput.value = '';
-    speedInput.focus();
-  });
-
-  speedInput.addEventListener('change', ()=>{
-    const v = parseFloat(speedInput.value);
-    if(!isNaN(v) && v > 0) onSpeedSet(Math.round(v*10)/10);
-    speedInput.blur();
-  });
-  speedInput.addEventListener('keydown', (e)=>{
-    if(e.key==='Enter'){
-      const v=parseFloat(speedInput.value);
-      if(!isNaN(v)&&v>0) onSpeedSet(Math.round(v*10)/10);
-      speedInput.blur();
+  function openNumpad(){
+    numStr='';
+    previewVal.textContent='—';
+    okBtn.classList.add('disabled');
+    viewNormal.style.display='none';
+    viewNumpad.classList.add('active');
+    resize(); // recalc canvas size with new footer height
+  }
+  function closeNumpad(){
+    viewNumpad.classList.remove('active');
+    viewNormal.style.display='';
+    resize();
+  }
+  function numpadRefresh(){
+    if(numStr===''){
+      previewVal.textContent='—';
+      okBtn.classList.add('disabled');
+    } else {
+      previewVal.textContent=numStr;
+      const v=parseFloat(numStr);
+      const valid=!isNaN(v)&&v>=1&&v<=200;
+      okBtn.classList.toggle('disabled',!valid);
     }
+  }
+  function numpadKey(k){
+    if(k==='back'){
+      numStr=numStr.slice(0,-1);
+    } else if(k==='.'){
+      if(!numStr.includes('.')) numStr+='.';
+    } else {
+      // Max 5 chars total, max 1 decimal place
+      if(numStr.includes('.')){
+        const parts=numStr.split('.');
+        if(parts[1].length>=1) return; // already has 1 decimal digit
+      }
+      if(numStr.replace('.','').length>=4) return; // max 4 digits
+      numStr+=k;
+    }
+    numpadRefresh();
+  }
+  function numpadConfirm(){
+    const v=parseFloat(numStr);
+    if(isNaN(v)||v<=0) return;
+    closeNumpad();
+    onSpeedSet(Math.round(v*10)/10);
+  }
+
+  // Speed card tap → open numpad
+  document.getElementById('speed-card').addEventListener('click', openNumpad);
+  document.getElementById('speed-card').addEventListener('touchend', (e)=>{
+    e.preventDefault(); openNumpad();
+  });
+
+  // Cancel
+  document.getElementById('numpad-cancel').addEventListener('click', closeNumpad);
+
+  // OK
+  okBtn.addEventListener('click', ()=>{ if(!okBtn.classList.contains('disabled')) numpadConfirm(); });
+
+  // Key buttons
+  document.getElementById('numpad-grid').addEventListener('click', (e)=>{
+    const btn=e.target.closest('.nk');
+    if(!btn||btn===okBtn) return;
+    numpadKey(btn.dataset.v);
   });
 
   // ── Drag ─────────────────────────────────────────────
   let dragging=false, dragTarget=null, lastAng=0;
-
   function hitTest(x,y){
-    const d=Math.hypot(x-CX,y-CY);
-    const innerR=R*0.660, hubR=R*0.330;
+    const d=Math.hypot(x-CX,y-CY), innerR=R*0.660, hubR=R*0.330;
     if(d>hubR&&d<=innerR) return 'inner';
     return null;
   }
   function onStart(e){
     e.preventDefault();
     const p=evtPos(e); dragTarget=hitTest(p.x,p.y);
-    if(!dragTarget) return;
-    dragging=true; lastAng=ptAngle(p.x,p.y);
+    if(!dragTarget) return; dragging=true; lastAng=ptAngle(p.x,p.y);
   }
   function onMove(e){
     if(!dragging) return; e.preventDefault();
-    const p=evtPos(e),a=ptAngle(p.x,p.y);
+    const p=evtPos(e), a=ptAngle(p.x,p.y);
     let d=a-lastAng;
     if(d>Math.PI)  d-=2*Math.PI;
     if(d<-Math.PI) d+=2*Math.PI;
@@ -600,13 +644,11 @@
     if(dragTarget==='inner'){ innerRot+=d; draw(); }
   }
   function onEnd(){
-    if(dragging && dragTarget==='inner'){
-      // On drag-end, sync speed and restart timer
+    if(dragging&&dragTarget==='inner'){
       const spd=currentSpeed();
       if(spd>=V_MIN*0.98&&spd<=V_MAX*1.02){
         currentSpeedKmh=spd;
         document.getElementById('speed-display').textContent=spd.toFixed(1);
-        // restart timer
         timerRunning=false; timerOffset=0;
         if(timerRAF) cancelAnimationFrame(timerRAF);
         timerStart=performance.now(); timerRunning=true; tickTimer();
@@ -614,7 +656,6 @@
     }
     dragging=false; dragTarget=null;
   }
-
   canvas.addEventListener('mousedown',  onStart);
   canvas.addEventListener('mousemove',  onMove);
   canvas.addEventListener('mouseup',    onEnd);
@@ -624,29 +665,27 @@
   canvas.addEventListener('touchend',   onEnd);
   canvas.addEventListener('touchcancel',onEnd);
 
-  // ── Reset button ──────────────────────────────────────
+  // ── Reset ─────────────────────────────────────────────
   document.getElementById('reset-btn').addEventListener('click', resetTimer);
 
   // ── Mode toggle ───────────────────────────────────────
-  let isBeginner = true;
-  const modeBtn    = document.getElementById('mode-btn');
-  const modeLabel  = document.getElementById('mode-label');
-  const rowExtras  = document.getElementById('row-extras');
-
-  modeBtn.addEventListener('click', ()=>{
-    isBeginner = !isBeginner;
+  let isBeginner=true;
+  const modeBtn=document.getElementById('mode-btn');
+  const rowExtras=document.getElementById('row-extras');
+  modeBtn.addEventListener('click',()=>{
+    isBeginner=!isBeginner;
     if(isBeginner){
       modeBtn.className='beginner';
       modeBtn.querySelector('.mode-icon').textContent='🔰';
-      modeLabel.textContent='初心者';
+      document.getElementById('mode-label').textContent='初心者';
       rowExtras.className='visible';
     } else {
       modeBtn.className='advanced';
       modeBtn.querySelector('.mode-icon').textContent='⚑';
-      modeLabel.textContent='上級者';
+      document.getElementById('mode-label').textContent='上級者';
       rowExtras.className='hidden';
-      // Stop timer display but keep running internally
     }
+    resize();
   });
 
   window.addEventListener('resize', resize);
